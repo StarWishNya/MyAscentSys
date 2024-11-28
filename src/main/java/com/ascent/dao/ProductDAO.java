@@ -31,7 +31,7 @@ public class ProductDAO {
                 product.setCas(resultSet.getString("cas"));
                 product.setFormula(resultSet.getString("formula"));
                 product.setCategory(resultSet.getString("category"));
-                product.setStructurePictureAddress(resultSet.getString("structure_picture_address"));
+                product.setStructurePictureAddress(resultSet.getString("structurePictureAddress"));
                 return Optional.of(product);
             }
 
@@ -63,7 +63,7 @@ public class ProductDAO {
                 product.setCas(resultSet.getString("cas"));
                 product.setFormula(resultSet.getString("formula"));
                 product.setCategory(resultSet.getString("category"));
-                product.setStructurePictureAddress(resultSet.getString("structure_picture_address"));
+                product.setStructurePictureAddress(resultSet.getString("structurePictureAddress"));
                 return Optional.of(product);
             }
 

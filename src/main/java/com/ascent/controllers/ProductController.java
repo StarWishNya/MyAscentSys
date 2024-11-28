@@ -172,7 +172,8 @@ public class ProductController {
             if (result) {
                 response.put("status", "1");
                 response.put("message", "插入成功");
-                response.put("id", product.getId());
+                int id = productService.queryProductByName(product.getName()).get().getId();
+                response.put("id", id);
             } else {
                 response.put("status", "0");
                 response.put("message", "插入失败");

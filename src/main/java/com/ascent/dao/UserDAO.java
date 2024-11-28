@@ -44,13 +44,12 @@ public class UserDAO {
      * @return boolean 插入是否成功
      */
     public boolean insertUser(User user) throws SQLException {
-        String query = "INSERT INTO user_tb (username, password, authority) VALUES (?, ?, ?)";
+        String query = "INSERT INTO user_tb (username, password) VALUES (?, ?)";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setInt(3, user.getAuthority());
             return preparedStatement.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -66,20 +65,28 @@ public class UserDAO {
      * @return boolean 更新是否成功
      */
     public boolean updateUser(User user){
-        String query = "UPDATE user_tb SET password = ?, authority = ? WHERE username = ?";
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    String query = "UPDATE user_tb SET authority = ? WHERE username = ?";
+    if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+        query = "UPDATE user_tb SET password = ?, authority = ? WHERE username = ?";
+    }
+    try (Connection connection = DBConnection.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
             preparedStatement.setString(1, user.getPassword());
             preparedStatement.setInt(2, user.getAuthority());
             preparedStatement.setString(3, user.getUsername());
-            return preparedStatement.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            preparedStatement.setInt(1, user.getAuthority());
+            preparedStatement.setString(2, user.getUsername());
         }
-        return false;
+        return preparedStatement.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return false;
+}
 
     /**
      * 删除用户
