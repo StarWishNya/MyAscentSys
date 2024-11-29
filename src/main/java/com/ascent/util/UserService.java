@@ -4,6 +4,7 @@ import com.ascent.bean.User;
 import com.ascent.bean.Authenticate;
 import com.ascent.dao.UserDAO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -80,5 +81,14 @@ public class UserService {
      */
     public boolean deleteUser(String username) {
         return userDAO.deleteUser(username);
+    }
+
+    /**
+     * 获取所有用户
+     * @return ResultSet 所有用户
+     * @throws SQLException 数据库查询异常
+     */
+    public ResultSet getAllUsers() throws SQLException {
+        return userDAO.getAllUsers();
     }
 }

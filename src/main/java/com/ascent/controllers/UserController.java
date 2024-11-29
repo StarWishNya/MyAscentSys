@@ -290,4 +290,35 @@ public class UserController {
             return error.toJSONString();
         }
     }
+
+    /**
+     * 获取所有用户
+     * @return json格式的响应
+     * {
+     *     "status": "1",
+     *     "message": "获取用户成功",
+     *     "users": [
+     *     {
+     *     "username": "用户名",
+     *     "authority": "用户权限"
+     *     },]
+     * }
+     */
+    public String getAllUsers() {
+        try {
+            // 获取所有用户
+            JSONObject response = new JSONObject();
+            response.put("status", "1");
+            response.put("message", "获取用户成功");
+            response.put("users", userService.getAllUsers());
+            return response.toJSONString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONObject error = new JSONObject();
+            error.put("status", "0");
+            error.put("message", "获取用户异常");
+            error.put("error", e.getMessage());
+            return error.toJSONString();
+        }
+    }
 }

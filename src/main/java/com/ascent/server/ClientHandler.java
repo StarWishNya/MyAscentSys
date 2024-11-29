@@ -81,6 +81,9 @@ public class ClientHandler implements Runnable{
                 case "deleteProduct":
                     response = productController.deleteProduct(jsonObject.toJSONString());
                     break;
+                case "getAllUsers":
+                    response = userController.getAllUsers();
+                    break;
                 default:
                     JSONObject error = new JSONObject();
                     error.put("status", "0");

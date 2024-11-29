@@ -51,4 +51,9 @@ public class ServerConnection {
     public void stop() {
         System.out.println("服务器关闭");
     }
+
+    public static void main(String[] args) {
+        ServerConnection server = new ServerConnection();
+        server.start();
+    }
 }

@@ -107,4 +107,16 @@ public class UserDAO {
         }
         return false;
     }
+
+    /**
+     * 获取所有用户
+     * @return List<User> 所有用户列表
+     * @throws SQLException SQL 异常
+     */
+    public ResultSet getAllUsers() throws SQLException {
+        String query = "SELECT * FROM user_tb";
+        Connection connection = DBConnection.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        return preparedStatement.executeQuery();
+    }
 }

@@ -104,4 +104,14 @@ public class UserControllerTest {
         System.out.println(response);
     }
 
+    @Test
+    @Order(9)
+    void getAllUsers() {
+        JSONObject request = new JSONObject();
+        request.put("function", "getAllUsers");
+        System.out.println(request.toJSONString());
+        String response = userController.getAllUsers();
+        System.out.println(response);
+    }
+
 }
