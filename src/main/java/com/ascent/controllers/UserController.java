@@ -2,10 +2,12 @@ package com.ascent.controllers;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ascent.bean.Authenticate;
+import com.ascent.bean.User;
 import com.ascent.util.UserService;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -307,10 +309,11 @@ public class UserController {
     public String getAllUsers() {
         try {
             // 获取所有用户
+            List<User> users = userService.getAllUsers();
             JSONObject response = new JSONObject();
             response.put("status", "1");
             response.put("message", "获取用户成功");
-            response.put("users", userService.getAllUsers());
+            response.put("users", users);
             return response.toJSONString();
         } catch (Exception e) {
             e.printStackTrace();
