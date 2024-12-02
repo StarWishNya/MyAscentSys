@@ -6,6 +6,7 @@ import com.ascent.util.ProductService;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ProductController {
@@ -307,6 +308,43 @@ public class ProductController {
             JSONObject response = new JSONObject();
             response.put("status", "0");
             response.put("message", "删除异常");
+            response.put("error", e.getMessage());
+            return response.toJSONString();
+        }
+    }
+
+    /**
+     * 获取所有产品
+     * @return json格式的响应
+     * {
+     *     "status": "1",
+     *     "message": "查询成功",
+     *     "products": [
+     *     {
+     *     "id": "产品ID",
+     *     "name": "产品名",
+     *     "price": "产品价格",
+     *     "stock": "产品库存",
+     *     "cas": "CAS号",
+     *     "formula": "分子式",
+     *     "category": "类别",
+     *     "structurePictureAddress": "结构式图片地址"
+     *     },]
+     * }
+     */
+    public String getAllProducts(){
+        try {
+            List<Product> products = productService.getAllProducts();
+            JSONObject response = new JSONObject();
+            response.put("status", "1");
+            response.put("message", "查询成功");
+            response.put("products", products);
+            return response.toJSONString();
+        }catch (Exception e){
+            e.printStackTrace();
+            JSONObject response = new JSONObject();
+            response.put("status", "0");
+            response.put("message", "查询异常");
             response.put("error", e.getMessage());
             return response.toJSONString();
         }

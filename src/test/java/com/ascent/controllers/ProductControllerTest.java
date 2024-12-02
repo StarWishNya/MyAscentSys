@@ -128,4 +128,14 @@ class ProductControllerTest {
         String response = productController.deleteProduct(request.toJSONString());
         System.out.println(response);
     }
+
+    @Test
+    @Order(9)
+    void getAllProducts(){
+        JSONObject request = new JSONObject();
+        request.put("function", "getAllProducts");
+        System.out.println(request.toJSONString());
+        String response = productController.getAllProducts();
+        System.out.println(response);
+    }
 }

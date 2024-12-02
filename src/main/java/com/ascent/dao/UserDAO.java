@@ -110,7 +110,7 @@ public class UserDAO {
 
     /**
      * 获取所有用户
-     * @return List<User> 所有用户列表
+     * @return ResultSet 所有用户列表
      * @throws SQLException SQL 异常
      */
     public ResultSet getAllUsers() throws SQLException {

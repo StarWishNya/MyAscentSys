@@ -3,7 +3,10 @@ package com.ascent.util;
 import com.ascent.bean.Product;
 import com.ascent.dao.ProductDAO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ProductService {
@@ -93,5 +96,28 @@ public class ProductService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 获取所有产品
+     * @return List<Product> 产品列表
+     * @throws SQLException 数据库查询异常
+     */
+    public List<Product> getAllProducts() throws SQLException{
+        ResultSet resultSet = productDAO.getAllProducts();
+        List<Product> products = new ArrayList<>();
+        while(resultSet.next()){
+            Product product = new Product();
+            product.setId(resultSet.getInt("id"));
+            product.setName(resultSet.getString("name"));
+            product.setPrice(resultSet.getDouble("price"));
+            product.setStock(resultSet.getInt("stock"));
+            product.setCas(resultSet.getString("cas"));
+            product.setFormula(resultSet.getString("formula"));
+            product.setCategory(resultSet.getString("category"));
+            product.setStructurePictureAddress(resultSet.getString("structurePictureAddress"));
+            products.add(product);
+        }
+        return products;
     }
 }

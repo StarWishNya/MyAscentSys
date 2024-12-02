@@ -166,4 +166,16 @@ public class ProductDAO {
         }
         return false;
     }
+
+    /**
+     * 获取所有产品
+     * @return ResultSet 所有产品列表
+     * @throws SQLException SQL 异常
+     */
+    public ResultSet getAllProducts() throws SQLException {
+        String query = "SELECT * FROM product_tb";
+        Connection connection = DBConnection.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        return preparedStatement.executeQuery();
+    }
 }
