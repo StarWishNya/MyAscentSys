@@ -24,18 +24,15 @@ public class ClientHandler implements Runnable{
         try (BufferedReader Reader  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter Writer = new PrintWriter(clientSocket.getOutputStream(), true)) {
             // 读取请求
-            String request = Reader.readLine();
-            System.out.println("接收到请求：" + request);
+            String request;
+            while ((request = Reader.readLine()) != null) {
+                System.out.println("接收到请求：" + request);
+                JSONObject jsonObject = JSON.parseObject(request);
+                String response = handleRequest(jsonObject);
 
-            // 解析请求
-            JSONObject jsonObject = JSON.parseObject(request);
-
-            //处理请求并返回响应
-            String response = handleRequest(jsonObject);
-            System.out.println("返回响应：" + response);
-
-            //将响应发送给客户端
-            Writer.println(response);
+                System.out.println("返回响应：" + response);
+                Writer.println(response);
+            }
 
         }catch (IOException e){
             JSONObject error = new JSONObject();
