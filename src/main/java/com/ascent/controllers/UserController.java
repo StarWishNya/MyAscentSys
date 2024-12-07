@@ -3,7 +3,7 @@ package com.ascent.controllers;
 import com.alibaba.fastjson.JSONObject;
 import com.ascent.bean.Authenticate;
 import com.ascent.bean.User;
-import com.ascent.util.UserService;
+import com.ascent.server.UserService;
 
 import com.alibaba.fastjson.JSON;
 

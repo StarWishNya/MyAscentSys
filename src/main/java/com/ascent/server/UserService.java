@@ -1,4 +1,4 @@
-package com.ascent.util;
+package com.ascent.server;
 
 import com.ascent.bean.User;
 import com.ascent.bean.Authenticate;

@@ -2,7 +2,7 @@ package com.ascent.controllers;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ascent.bean.Product;
-import com.ascent.util.ProductService;
+import com.ascent.server.ProductService;
 
 import com.alibaba.fastjson.JSON;
 

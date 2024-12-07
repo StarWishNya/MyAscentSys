@@ -1,4 +1,4 @@
-package com.ascent.server;
+package com.ascent.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

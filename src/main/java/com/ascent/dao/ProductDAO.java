@@ -1,6 +1,7 @@
 package com.ascent.dao;
 
 import com.ascent.bean.Product;
+import com.ascent.utils.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,5 +1,7 @@
 package com.ascent.dao;
 
+import com.ascent.utils.DBConnection;
+
 import java.sql.Connection;
 
 public class DBConnectionTest {

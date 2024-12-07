@@ -1,4 +1,4 @@
-package com.ascent.util;
+package com.ascent.server;
 
 import com.ascent.bean.Product;
 import com.ascent.dao.ProductDAO;

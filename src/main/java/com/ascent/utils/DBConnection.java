@@ -1,4 +1,4 @@
-package com.ascent.dao;
+package com.ascent.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

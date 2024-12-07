@@ -1,4 +1,4 @@
-package com.ascent.server;
+package com.ascent.client;
 
 import java.io.IOException;
 import java.net.ServerSocket;
