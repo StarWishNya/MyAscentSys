@@ -143,4 +143,24 @@ class ClientHandlerIntegrationTest {
         assertEquals("0", responseJson.getString("status"), "未知请求应该返回失败状态");
         assertEquals("未知请求", responseJson.getString("message"), "应该返回未知请求消息");
     }
+
+    @Test
+    void getAuthority() throws IOException {
+        // 准备获取权限请求
+        JSONObject getAuthorityRequest = new JSONObject();
+        getAuthorityRequest.put("function", "getAuthority");
+        getAuthorityRequest.put("username", "testuser");
+
+        // 执行请求
+        executeClientHandlerWithRequest(getAuthorityRequest.toJSONString());
+
+        // 解析响应
+        String response = outputStream.toString().trim();
+        JSONObject responseJson = JSON.parseObject(response);
+
+        // 断言
+        assertNotNull(responseJson);
+        assertEquals("1", responseJson.getString("status"), "获取权限应该成功");
+        assertNotNull(responseJson.getString("authority"), "应该返回权限信息");
+    }
 }

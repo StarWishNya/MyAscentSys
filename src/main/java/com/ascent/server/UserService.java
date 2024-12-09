@@ -101,4 +101,14 @@ public class UserService {
         }
         return users;
     }
+
+    /**
+     * 查询用户权限
+     * @param username 用户名
+     * @return int 用户权限
+     */
+    public int getUserAuthority(String username) {
+        Optional<User> userOptional = userDAO.getUserByUsername(username);
+        return userOptional.map(User::getAuthority).orElse(-1);
+    }
 }

@@ -324,4 +324,47 @@ public class UserController {
             return error.toJSONString();
         }
     }
+
+    /**
+     * 获取用户权限
+     * @param request json格式的请求
+     * {
+     *     "function": "getAuthority",
+     *     "username": "用户名"
+     * }
+     * @return json格式的响应
+     * {
+     *     "status": "1",
+     *     "message": "获取权限成功",
+     *     "authority": "用户权限"
+     * }
+     * or
+     * {
+     *     "status": "0",
+     *     "message": "获取权限失败"
+     *     "error": "用户不存在"
+     * }
+     */
+    public String getAuthority(String request) {
+        try {
+            // 解析请求
+            JSONObject jsonObject = JSON.parseObject(request);
+            String username = jsonObject.getString("username");
+
+            // 获取用户权限
+            int authority = userService.getUserAuthority(username);
+            JSONObject response = new JSONObject();
+            response.put("status", "1");
+            response.put("message", "获取权限成功");
+            response.put("authority", authority);
+            return response.toJSONString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONObject error = new JSONObject();
+            error.put("status", "0");
+            error.put("message", "权限获取异常");
+            error.put("error", e.getMessage());
+            return error.toJSONString();
+        }
+    }
 }
