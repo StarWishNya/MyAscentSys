@@ -10,12 +10,24 @@ import java.io.InputStream;
 public class DBConnection {
 
     // JDBC URL, 用户名和密码会从配置文件读取
-    private static final String dbUrl;
-    private static final String dbUsername;
-    private static final String dbPassword;
+    private static final String dbUrl = PropertiesGetter.getProperty("db.url");
+    private static final String dbUsername = PropertiesGetter.getProperty("db.username");
+    private static final String dbPassword = PropertiesGetter.getProperty("db.password");
+    private static final String dbDriver = PropertiesGetter.getProperty("db.driver");
+
+    static{
+        try{
+            // 确保 JDBC 驱动可用
+            Class.forName(dbDriver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "数据库驱动加载失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException("数据库驱动加载失败：" + e.getMessage());
+        }
+    }
 
     // 静态代码块加载配置文件
-    static {
+    /*static {
         try (InputStream input = DBConnection.class.getClassLoader().getResourceAsStream("dbconfig.properties")) {
             if (input == null) {
                 throw new RuntimeException("配置文件 dbconfig.properties 未找到！");
@@ -33,7 +45,7 @@ public class DBConnection {
             e.printStackTrace();
             throw new RuntimeException("加载数据库配置失败：" + e.getMessage());
         }
-    }
+    }*/
 
     /**
      * 获取数据库连接

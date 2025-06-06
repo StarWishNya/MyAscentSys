@@ -1,5 +1,7 @@
 package com.ascent.client;
 
+import com.ascent.utils.PropertiesGetter;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,9 +10,9 @@ import java.io.InputStream;
 
 
 public class ServerConnection {
-    private static final int port ;
+    private static final int port  = Integer.parseInt(PropertiesGetter.getProperty("server.port"));
 
-    static {
+    /*static {
         try (InputStream input = ServerConnection.class.getClassLoader().getResourceAsStream("serverconfig.properties")) {
             if (input == null) {
                 throw new RuntimeException("配置文件 serverconfig.properties 未找到！");
@@ -23,7 +25,7 @@ public class ServerConnection {
             e.printStackTrace();
             throw new RuntimeException("加载服务器配置失败：" + e.getMessage());
         }
-    }
+    }*/
 
     /**
      * 启动服务器
