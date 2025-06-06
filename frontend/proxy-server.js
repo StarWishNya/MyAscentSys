@@ -17,9 +17,9 @@ try {
     };
 }
 
-// 获取当前环境
-const NODE_ENV = process.env.NODE_ENV || 'development';
-const currentConfig = config[NODE_ENV] || config.development;
+// 获取当前环境 - 改为默认使用 production
+const NODE_ENV = process.env.NODE_ENV || 'production';
+const currentConfig = config[NODE_ENV] || config.production;
 
 // 配置 - 优先使用环境变量，其次使用配置文件，最后使用默认值
 const PROXY_PORT = process.env.PORT || currentConfig.proxy.port || 3000;
