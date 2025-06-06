@@ -1,11 +1,30 @@
 const http = require('http');
 const net = require('net');
 const url = require('url');
+const fs = require('fs');
+const path = require('path');
 
-// 配置
-const PROXY_PORT = 3000;
-const BACKEND_HOST = 'localhost';
-const BACKEND_PORT = 8083;
+// 读取配置文件
+let config = {};
+try {
+    const configFile = fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8');
+    config = JSON.parse(configFile);
+} catch (error) {
+    console.warn('配置文件读取失败，使用默认配置:', error.message);
+    config = {
+        development: { proxy: { port: 3000 }, backend: { host: 'localhost', port: 8083 } },
+        production: { proxy: { port: 3000 }, backend: { host: 'localhost', port: 8083 } }
+    };
+}
+
+// 获取当前环境
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const currentConfig = config[NODE_ENV] || config.development;
+
+// 配置 - 优先使用环境变量，其次使用配置文件，最后使用默认值
+const PROXY_PORT = process.env.PORT || currentConfig.proxy.port || 3000;
+const BACKEND_HOST = process.env.BACKEND_HOST || currentConfig.backend.host || 'localhost';
+const BACKEND_PORT = process.env.BACKEND_PORT || currentConfig.backend.port || 8083;
 
 // 创建HTTP服务器
 const server = http.createServer((req, res) => {
@@ -120,27 +139,31 @@ const server = http.createServer((req, res) => {
                     const data = JSON.parse(requestData);
                     jsonMessage = {
                         function: 'insertProduct',
-                        name: data.name,
-                        price: data.price,
-                        stock: data.stock,
-                        cas: data.cas || '',
-                        formula: data.formula || '',
-                        category: data.category || '0',
-                        structurePictureAddress: data.structureImage || ''
+                        product: {
+                            name: data.name,
+                            price: data.price,
+                            stock: data.stock,
+                            cas: data.cas || '',
+                            formula: data.formula || '',
+                            category: data.category || '0',
+                            structurePictureAddress: data.structureImage || ''
+                        }
                     };
                 } else if (path.startsWith('/api/products/') && req.method === 'PUT') {
                     const productId = path.split('/')[3];
                     const data = JSON.parse(requestData);
                     jsonMessage = {
                         function: 'updateProduct',
-                        id: parseInt(productId),
-                        name: data.name,
-                        price: data.price,
-                        stock: data.stock,
-                        cas: data.cas || '',
-                        formula: data.formula || '',
-                        category: data.category || '0',
-                        structurePictureAddress: data.structureImage || ''
+                        product: {
+                            id: parseInt(productId),
+                            name: data.name,
+                            price: data.price,
+                            stock: data.stock,
+                            cas: data.cas || '',
+                            formula: data.formula || '',
+                            category: data.category || '0',
+                            structurePictureAddress: data.structureImage || ''
+                        }
                     };
                 } else if (path.startsWith('/api/products/') && req.method === 'DELETE') {
                     const productId = path.split('/')[3];
@@ -296,8 +319,17 @@ function sendErrorResponse(res, statusCode, message) {
 
 // 启动服务器
 server.listen(PROXY_PORT, () => {
+    console.log('='.repeat(50));
+    console.log('MyAscentSys Proxy Server Started');
+    console.log('='.repeat(50));
+    console.log(`Environment: ${NODE_ENV}`);
     console.log(`Proxy server running on http://localhost:${PROXY_PORT}`);
-    console.log(`Proxying requests to ${BACKEND_HOST}:${BACKEND_PORT}`);
+    console.log(`Backend server: ${BACKEND_HOST}:${BACKEND_PORT}`);
+    console.log('Configuration source:');
+    console.log(`  - PORT: ${process.env.PORT ? 'Environment Variable' : 'Config File/Default'}`);
+    console.log(`  - BACKEND_HOST: ${process.env.BACKEND_HOST ? 'Environment Variable' : 'Config File/Default'}`);
+    console.log(`  - BACKEND_PORT: ${process.env.BACKEND_PORT ? 'Environment Variable' : 'Config File/Default'}`);
+    console.log('='.repeat(50));
     console.log('Ready to handle frontend requests...');
 });
 

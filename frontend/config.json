@@ -1,0 +1,20 @@
+{
+  "development": {
+    "proxy": {
+      "port": 3000
+    },
+    "backend": {
+      "host": "localhost",
+      "port": 8083
+    }
+  },
+  "production": {
+    "proxy": {
+      "port": 3000
+    },
+    "backend": {
+      "host": "218.95.39.226",
+      "port": 8083
+    }
+  }
+}
