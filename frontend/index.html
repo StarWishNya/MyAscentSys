@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyAscentSys - 化学品管理系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="login-container" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-flask"></i>
+                <h1>MyAscentSys</h1>
+                <p>化学品管理系统</p>
+            </div>
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <input type="text" id="login-username" placeholder="用户名" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="密码" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <p class="auth-switch">
+                    还没有账户？ <a href="#" onclick="showRegister()">立即注册</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册界面 -->
+    <div id="register-container" class="auth-container" style="display: none;">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-flask"></i>
+                <h1>注册账户</h1>
+                <p>创建您的化学品管理账户</p>
+            </div>
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <input type="text" id="register-username" placeholder="用户名" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="register-password" placeholder="密码" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="register-confirm-password" placeholder="确认密码" required>
+                    <i class="fas fa-check"></i>
+                </div>
+                <button type="submit" class="btn-primary">注册</button>
+                <p class="auth-switch">
+                    已有账户？ <a href="#" onclick="showLogin()">立即登录</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="main-container" class="main-container" style="display: none;">
+        <!-- 顶部导航栏 -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-flask"></i>
+                <span>MyAscentSys</span>
+            </div>
+            <div class="nav-user">
+                <span id="current-user">欢迎, 用户</span>
+                <div class="user-menu">
+                    <button onclick="showChangePassword()" class="btn-secondary">
+                        <i class="fas fa-key"></i> 修改密码
+                    </button>
+                    <button onclick="logout()" class="btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> 退出
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-home"></i>
+                    <span>仪表板</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('products')">
+                    <i class="fas fa-vial"></i>
+                    <span>产品管理</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('users')" id="user-management-link" style="display: none;">
+                    <i class="fas fa-users"></i>
+                    <span>用户管理</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 仪表板 -->
+            <section id="dashboard-section" class="content-section active">
+                <h2>系统概览</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-vial"></i>
+                        <div class="stat-info">
+                            <h3 id="total-products">0</h3>
+                            <p>总产品数</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3 id="total-users">0</h3>
+                            <p>用户数量</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div class="stat-info">
+                            <h3 id="total-value">¥0</h3>
+                            <p>库存价值</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="recent-activities">
+                    <h3>快速操作</h3>
+                    <div class="quick-actions">
+                        <button onclick="showAddProduct()" class="btn-primary">
+                            <i class="fas fa-plus"></i> 添加产品
+                        </button>
+                        <button onclick="showSection('products')" class="btn-secondary">
+                            <i class="fas fa-search"></i> 查找产品
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 产品管理 -->
+            <section id="products-section" class="content-section">
+                <div class="section-header">
+                    <h2>产品管理</h2>
+                    <button onclick="showAddProduct()" class="btn-primary">
+                        <i class="fas fa-plus"></i> 添加产品
+                    </button>
+                </div>
+                
+                <!-- 搜索栏 -->
+                <div class="search-bar">
+                    <input type="text" id="product-search" placeholder="搜索产品名称或CAS号...">
+                    <button onclick="searchProducts()" class="btn-secondary">
+                        <i class="fas fa-search"></i> 搜索
+                    </button>
+                </div>
+
+                <!-- 产品列表 -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>产品名称</th>
+                                <th>价格</th>
+                                <th>库存</th>
+                                <th>CAS号</th>
+                                <th>分子式</th>
+                                <th>类别</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- 产品数据将在这里动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 用户管理 -->
+            <section id="users-section" class="content-section">
+                <div class="section-header">
+                    <h2>用户管理</h2>
+                </div>
+
+                <!-- 用户列表 -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>权限级别</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- 用户数据将在这里动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 添加/编辑产品模态框 -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">添加产品</h3>
+                <span class="close" onclick="closeModal('product-modal')">&times;</span>
+            </div>
+            <form id="product-form" class="modal-form">
+                <input type="hidden" id="product-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-name">产品名称 *</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">价格 *</label>
+                        <input type="number" id="product-price" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-stock">库存 *</label>
+                        <input type="number" id="product-stock" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-cas">CAS号</label>
+                        <input type="text" id="product-cas">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-formula">分子式</label>
+                        <input type="text" id="product-formula">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">类别</label>
+                        <select id="product-category">
+                            <option value="0">有机化合物</option>
+                            <option value="1">无机化合物</option>
+                            <option value="2">生物试剂</option>
+                            <option value="3">分析试剂</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="product-structure">结构图地址</label>
+                    <input type="url" id="product-structure" placeholder="http://example.com/structure.png">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal('product-modal')" class="btn-secondary">取消</button>
+                    <button type="submit" class="btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>修改密码</h3>
+                <span class="close" onclick="closeModal('password-modal')">&times;</span>
+            </div>
+            <form id="password-form" class="modal-form">
+                <div class="form-group">
+                    <label for="old-password">当前密码</label>
+                    <input type="password" id="old-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">新密码</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password">确认新密码</label>
+                    <input type="password" id="confirm-new-password" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal('password-modal')" class="btn-secondary">取消</button>
+                    <button type="submit" class="btn-primary">修改密码</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 加载提示 -->
+    <div id="loading" class="loading" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>正在处理...</p>
+        </div>
+    </div>
+
+    <!-- 消息提示 -->
+    <div id="message-container" class="message-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

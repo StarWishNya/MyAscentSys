@@ -1,0 +1,22 @@
+{
+  "name": "myascentsys-frontend-proxy",
+  "version": "1.0.0",
+  "description": "HTTP to TCP proxy server for MyAscentSys frontend",
+  "main": "proxy-server.js",
+  "scripts": {
+    "start": "node proxy-server.js",
+    "dev": "node proxy-server.js"
+  },
+  "keywords": [
+    "proxy",
+    "tcp",
+    "http",
+    "chemical",
+    "management"
+  ],
+  "author": "MyAscentSys",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

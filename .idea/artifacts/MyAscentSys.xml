@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MyAscentSys">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="MyAscentSys.jar" />
+  </artifact>
+</component>

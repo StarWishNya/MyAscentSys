@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # MyAscentSys Frontend Proxy
+  myascentsys-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: myascentsys-proxy
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - BACKEND_HOST=host.docker.internal  # 连接到宿主机上的Java后端
+      - BACKEND_PORT=8083
+    restart: unless-stopped
+    networks:
+      - myascentsys-network
+    depends_on:
+      - myascentsys-backend
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 如果您想将Java后端也容器化，可以添加以下配置
+  # myascentsys-backend:
+  #   image: openjdk:17-jdk-alpine
+  #   container_name: myascentsys-backend
+  #   working_dir: /app
+  #   volumes:
+  #     - ../:/app
+  #   command: java -cp target/classes com.ascent.Main
+  #   ports:
+  #     - "8083:8083"
+  #   networks:
+  #     - myascentsys-network
+  #   restart: unless-stopped
+
+networks:
+  myascentsys-network:
+    driver: bridge
+
+# 可选：如果需要持久化数据
+volumes:
+  myascentsys-data:
+    driver: local
