@@ -1,30 +1,11 @@
 const http = require('http');
 const net = require('net');
 const url = require('url');
-const fs = require('fs');
-const path = require('path');
 
-// 读取配置文件
-let config = {};
-try {
-    const configFile = fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8');
-    config = JSON.parse(configFile);
-} catch (error) {
-    console.warn('配置文件读取失败，使用默认配置:', error.message);
-    config = {
-        development: { proxy: { port: 3000 }, backend: { host: 'localhost', port: 8083 } },
-        production: { proxy: { port: 3000 }, backend: { host: 'localhost', port: 8083 } }
-    };
-}
-
-// 获取当前环境 - 改为默认使用 production
-const NODE_ENV = process.env.NODE_ENV || 'production';
-const currentConfig = config[NODE_ENV] || config.production;
-
-// 配置 - 优先使用环境变量，其次使用配置文件，最后使用默认值
-const PROXY_PORT = process.env.PORT || currentConfig.proxy.port || 3000;
-const BACKEND_HOST = process.env.BACKEND_HOST || currentConfig.backend.host || 'localhost';
-const BACKEND_PORT = process.env.BACKEND_PORT || currentConfig.backend.port || 8083;
+// 配置 - 直接使用环境变量
+const PROXY_PORT = process.env.PORT || 3000;
+const BACKEND_HOST = process.env.BACKEND_HOST || 'localhost';
+const BACKEND_PORT = process.env.BACKEND_PORT || 8083;
 
 // 创建HTTP服务器
 const server = http.createServer((req, res) => {
@@ -38,7 +19,9 @@ const server = http.createServer((req, res) => {
         res.writeHead(200);
         res.end();
         return;
-    }    // 解析请求
+    }
+
+    // 解析请求
     const parsedUrl = url.parse(req.url, true);
     const path = parsedUrl.pathname;
     
@@ -51,7 +34,11 @@ const server = http.createServer((req, res) => {
             status: 'healthy',
             timestamp: new Date().toISOString(),
             service: 'MyAscentSys Proxy Server',
-            version: '1.0.0'
+            version: '1.0.0',
+            config: {
+                port: PROXY_PORT,
+                backend: `${BACKEND_HOST}:${BACKEND_PORT}`
+            }
         }));
         return;
     }
@@ -111,7 +98,8 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
         // 创建到后端TCP服务器的连接
         const client = new net.Socket();
-          client.connect(BACKEND_PORT, BACKEND_HOST, () => {
+        
+        client.connect(BACKEND_PORT, BACKEND_HOST, () => {
             console.log(`Connected to backend server at ${BACKEND_HOST}:${BACKEND_PORT}`);
             
             // 根据路径转换请求格式为JSON
@@ -192,6 +180,12 @@ const server = http.createServer((req, res) => {
                     jsonMessage = {
                         function: 'queryProductByName',
                         name: keyword
+                    };
+                } else if (path.startsWith('/api/product/') && req.method === 'GET') {
+                    const productId = path.split('/')[3];
+                    jsonMessage = {
+                        function: 'queryProductById',
+                        id: parseInt(productId)
                     };
                 } else {
                     sendErrorResponse(res, 404, 'API endpoint not found');
@@ -322,13 +316,12 @@ server.listen(PROXY_PORT, () => {
     console.log('='.repeat(50));
     console.log('MyAscentSys Proxy Server Started');
     console.log('='.repeat(50));
-    console.log(`Environment: ${NODE_ENV}`);
     console.log(`Proxy server running on http://localhost:${PROXY_PORT}`);
     console.log(`Backend server: ${BACKEND_HOST}:${BACKEND_PORT}`);
-    console.log('Configuration source:');
-    console.log(`  - PORT: ${process.env.PORT ? 'Environment Variable' : 'Config File/Default'}`);
-    console.log(`  - BACKEND_HOST: ${process.env.BACKEND_HOST ? 'Environment Variable' : 'Config File/Default'}`);
-    console.log(`  - BACKEND_PORT: ${process.env.BACKEND_PORT ? 'Environment Variable' : 'Config File/Default'}`);
+    console.log('Configuration via Docker environment variables:');
+    console.log(`  - PORT: ${PROXY_PORT}`);
+    console.log(`  - BACKEND_HOST: ${BACKEND_HOST}`);
+    console.log(`  - BACKEND_PORT: ${BACKEND_PORT}`);
     console.log('='.repeat(50));
     console.log('Ready to handle frontend requests...');
 });

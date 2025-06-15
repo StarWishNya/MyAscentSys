@@ -23,6 +23,11 @@ USER nextjs
 # 暴露端口
 EXPOSE 3000
 
+# 设置默认环境变量
+ENV PORT=3000
+ENV BACKEND_HOST=localhost
+ENV BACKEND_PORT=8083
+
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"

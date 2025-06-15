@@ -5,6 +5,9 @@ let userAuthority = 0;
 // API配置
 const API_BASE_URL = 'http://localhost:3000/api';
 
+// 全局变量存储产品列表
+let currentProducts = [];
+
 // 应用初始化
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
@@ -139,6 +142,11 @@ async function sendRequest(requestData) {
                 method = 'GET';
                 break;
                 
+            case 'queryProductById':
+                url = `${API_BASE_URL}/product/${requestData.id}`;
+                method = 'GET';
+                break;
+                
             default:
                 throw new Error(`Unknown function: ${requestData.function}`);
         }
@@ -170,6 +178,12 @@ async function sendRequest(requestData) {
                     status: "1",
                     message: "查询成功",
                     products: data.products
+                };
+            } else if (requestData.function === 'queryProductById') {
+                return {
+                    status: "1",
+                    message: "查询成功",
+                    product: data.products && data.products.length > 0 ? data.products[0] : null
                 };
             } else if (requestData.function === 'getAllUsers') {
                 return {
@@ -401,6 +415,9 @@ async function loadProducts() {
 
 // 显示产品列表
 function displayProducts(products) {
+    // 保存当前产品列表到全局变量
+    currentProducts = products;
+    
     const tbody = document.getElementById('products-table-body');
     tbody.innerHTML = '';
     
@@ -481,29 +498,37 @@ function showAddProduct() {
 // 编辑产品
 async function editProduct(productId) {
     try {
-        // 获取产品详情
-        const response = await sendRequest({ 
-            function: 'queryProductById',
-            id: productId 
-        });
+        // 首先尝试从当前产品列表中查找
+        let product = currentProducts.find(p => p.id === productId);
         
-        if (response.status === "1") {
-            const product = response.product;
+        if (!product) {
+            // 如果当前列表中没有，则从服务器获取
+            const response = await sendRequest({ 
+                function: 'queryProductById',
+                id: productId 
+            });
             
-            document.getElementById('product-modal-title').textContent = '编辑产品';
-            document.getElementById('product-id').value = product.id;
-            document.getElementById('product-name').value = product.name;
-            document.getElementById('product-price').value = product.price;
-            document.getElementById('product-stock').value = product.stock;
-            document.getElementById('product-cas').value = product.cas || '';
-            document.getElementById('product-formula').value = product.formula || '';
-            document.getElementById('product-category').value = product.category || '0';
-            document.getElementById('product-structure').value = product.structurePictureAddress || '';
-            
-            document.getElementById('product-modal').style.display = 'block';
-        } else {
-            showMessage('获取产品信息失败', 'error');
+            if (response.status === "1" && response.product) {
+                product = response.product;
+            } else {
+                showMessage('获取产品信息失败', 'error');
+                return;
+            }
         }
+        
+        // 填充编辑表单
+        document.getElementById('product-modal-title').textContent = '编辑产品';
+        document.getElementById('product-id').value = product.id;
+        document.getElementById('product-name').value = product.name;
+        document.getElementById('product-price').value = product.price;
+        document.getElementById('product-stock').value = product.stock;
+        document.getElementById('product-cas').value = product.cas || '';
+        document.getElementById('product-formula').value = product.formula || '';
+        document.getElementById('product-category').value = product.category || '0';
+        document.getElementById('product-structure').value = product.structurePictureAddress || '';
+        
+        document.getElementById('product-modal').style.display = 'block';
+        
     } catch (error) {
         showMessage('加载产品信息失败', 'error');
         console.error('编辑产品失败:', error);
